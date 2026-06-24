@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KHIRI AISSAM — SYSTEM ONLINE</title>
+  <meta name="description" content="Khiri Aissam. Builder. No social. No noise. Just signal." />
+
+  <!-- ============================================================
+  ██████╗  █████╗ ████████╗ █████╗
+  ██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗
+  ██║  ██║███████║   ██║   ███████║
+  ██║  ██║██╔══██║   ██║   ██╔══██║
+  ██████╔╝██║  ██║   ██║   ██║  ██║
+  ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+
+  ⚡ ANALYTICS PLACEHOLDER ⚡
+  Replace this comment block with your analytics script tag.
+  e.g. Cloudflare Web Analytics:
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js'
+    data-cf-beacon='{"token": "YOUR_TOKEN_HERE"}'></script>
+  ============================================================ -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:   #ff1a1a;
+      --red2:  #cc0000;
+      --red3:  #ff4444;
+      --bg:    #050505;
+      --bg2:   #0a0000;
+      --white: #f0f0f0;
+      --dim:   rgba(240,240,240,0.45);
+      --mono:  'Share Tech Mono', monospace;
+      --head:  'Bebas Neue', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--mono);
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
+
+    /* ── STATIC NOISE OVERLAY ────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      animation: noiseShift 0.15s steps(1) infinite;
+    }
+    @keyframes noiseShift {
+      0%   { transform: translate(0,0); }
+      25%  { transform: translate(-3px, 1px); }
+      50%  { transform: translate(2px, -2px); }
+      75%  { transform: translate(-1px, 3px); }
+      100% { transform: translate(1px, -1px); }
+    }
+
+    /* ── VIGNETTE ────────────────────────────────────────── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 1;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(5,0,0,0.88) 100%);
+      pointer-events: none;
+    }
+
+    /* ── TOP HUD BAR ─────────────────────────────────────── */
+    #hud-top {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 42px;
+      border-bottom: 1px solid rgba(255,26,26,0.25);
+      background: rgba(5,0,0,0.85);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--dim);
+    }
+    #hud-top .hud-left { display: flex; gap: 28px; }
+    #hud-top .hud-right { display: flex; gap: 28px; align-items: center; }
+    .hud-label { color: var(--red); }
+    .hud-blink {
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: blink 1.1s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.1} }
+
+    /* ── BOTTOM HUD BAR ──────────────────────────────────── */
+    #hud-bot {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      height: 36px;
+      border-top: 1px solid rgba(255,26,26,0.18);
+      background: rgba(5,0,0,0.85);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px;
+      font-size: 9px; letter-spacing: 0.18em; color: var(--dim);
+    }
+    #hud-bot .sys-id { color: rgba(255,26,26,0.5); }
+
+    /* ── MAIN LAYOUT ─────────────────────────────────────── */
+    main {
+      position: relative; z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px 60px;
+      gap: 0;
+    }
+
+    /* ── SCANNER RING ────────────────────────────────────── */
+    #scanner-wrap {
+      position: relative;
+      width: 380px; height: 380px;
+      flex-shrink: 0;
+      margin-bottom: 56px;
+      will-change: transform;
+    }
+    .ring {
+      position: absolute; inset: 0;
+      border-radius: 50%;
+    }
+    .ring-outer {
+      border: 1px solid rgba(255,26,26,0.22);
+      animation: ringPulse 3s ease-in-out infinite;
+    }
+    .ring-mid {
+      inset: 24px;
+      border: 1px dashed rgba(255,26,26,0.18);
+      animation: ringPulse 3s ease-in-out infinite 0.4s;
+    }
+    .ring-inner {
+      inset: 60px;
+      border: 1px solid rgba(255,26,26,0.28);
+      animation: ringPulse 3s ease-in-out infinite 0.8s;
+    }
+    @keyframes ringPulse {
+      0%,100% { opacity:0.6; transform: scale(1); }
+      50% { opacity:1; transform: scale(1.015); }
+    }
+
+    /* Cross hairs */
+    .crosshair-h, .crosshair-v {
+      position: absolute;
+      background: rgba(255,26,26,0.18);
+    }
+    .crosshair-h { top: 50%; left: 10%; right: 10%; height: 1px; transform: translateY(-50%); }
+    .crosshair-v { left: 50%; top: 10%; bottom: 10%; width: 1px; transform: translateX(-50%); }
+
+    /* Sweep */
+    #sweep {
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        rgba(255,26,26,0.04) 10deg,
+        rgba(255,26,26,0.22) 50deg,
+        rgba(255,26,26,0.55) 70deg,
+        rgba(255,26,26,0.22) 90deg,
+        rgba(255,26,26,0.04) 110deg,
+        transparent 120deg
+      );
+      animation: sweep 3s linear infinite;
+      filter: blur(1px);
+    }
+    @keyframes sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* Sweep tip glow */
+    #sweep::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 50%; height: 2px;
+      transform-origin: left center;
+      background: linear-gradient(to right, rgba(255,26,26,0.7), transparent);
+      transform: rotate(0deg) translateY(-50%);
+    }
+
+    /* Dot pings */
+    .ping {
+      position: absolute;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--red);
+      transform: translate(-50%, -50%);
+      animation: ping 2.5s ease-out infinite;
+    }
+    .ping::after {
+      content: '';
+      position: absolute; inset: -6px;
+      border-radius: 50%;
+      border: 1px solid var(--red);
+      animation: pingRing 2.5s ease-out infinite;
+    }
+    @keyframes ping { 0%{opacity:0} 15%{opacity:1} 100%{opacity:0} }
+    @keyframes pingRing { 0%{transform:scale(0.5); opacity:0.8} 100%{transform:scale(2.5); opacity:0} }
+
+    /* Center lock */
+    #center-lock {
+      position: absolute; top:50%; left:50%;
+      transform: translate(-50%,-50%);
+      width: 28px; height: 28px;
+      border: 2px solid var(--red);
+      background: rgba(255,26,26,0.08);
+      display: flex; align-items:center; justify-content:center;
+      font-family: var(--mono); font-size: 7px; color: var(--red);
+      letter-spacing: 0.05em;
+      animation: lockFlash 4s ease-in-out infinite;
+    }
+    #center-lock::before, #center-lock::after {
+      content: '';
+      position: absolute;
+      background: var(--red);
+    }
+    #center-lock::before { width: 1px; height: 16px; top: -16px; left: 50%; transform: translateX(-50%); }
+    #center-lock::after  { height: 1px; width: 16px; left: -16px; top: 50%; transform: translateY(-50%); }
+    @keyframes lockFlash { 0%,100%{box-shadow:0 0 8px rgba(255,26,26,0.4)} 50%{box-shadow:0 0 24px rgba(255,26,26,0.9)} }
+
+    /* Corner ticks on scanner */
+    .corner-tick {
+      position: absolute;
+      width: 14px; height: 14px;
+      border-color: var(--red);
+      border-style: solid;
+      border-width: 0;
+    }
+    .ct-tl { top: 6px; left: 6px; border-top-width: 2px; border-left-width: 2px; }
+    .ct-tr { top: 6px; right: 6px; border-top-width: 2px; border-right-width: 2px; }
+    .ct-bl { bottom: 6px; left: 6px; border-bottom-width: 2px; border-left-width: 2px; }
+    .ct-br { bottom: 6px; right: 6px; border-bottom-width: 2px; border-right-width: 2px; }
+
+    /* ── IDENTITY SECTION ────────────────────────────────── */
+    #identity { text-align: center; position: relative; }
+
+    /* Scan label */
+    .scan-label {
+      font-size: 10px; letter-spacing: 0.35em;
+      color: var(--red); margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    .scan-label::before { content: '[ '; }
+    .scan-label::after  { content: ' ]'; }
+
+    /* Name with glitch */
+    #name {
+      font-family: var(--head);
+      font-size: clamp(64px, 10vw, 112px);
+      line-height: 0.9;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      position: relative;
+      display: inline-block;
+      text-transform: uppercase;
+    }
+    #name::before {
+      content: attr(data-text);
+      position: absolute; inset: 0;
+      color: var(--red);
+      clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
+      animation: glitchA 5s steps(2) infinite;
+    }
+    #name::after {
+      content: attr(data-text);
+      position: absolute; inset: 0;
+      color: #00eeff;
+      clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+      animation: glitchB 5s steps(2) infinite 0.07s;
+    }
+    @keyframes glitchA {
+      0%,89%,100% { transform: translate(0,0); opacity: 0; }
+      90%  { transform: translate(-4px, 2px); opacity: 0.85; }
+      92%  { transform: translate(4px, -2px); opacity: 0; }
+      93%  { transform: translate(-2px, 1px); opacity: 0.9; }
+      95%  { transform: translate(0,0); opacity: 0; }
+    }
+    @keyframes glitchB {
+      0%,89%,100% { transform: translate(0,0); opacity: 0; }
+      90%  { transform: translate(4px, -2px); opacity: 0.8; }
+      92%  { transform: translate(-4px, 2px); opacity: 0; }
+      93%  { transform: translate(2px, -1px); opacity: 0.85; }
+      95%  { transform: translate(0,0); opacity: 0; }
+    }
+
+    /* Horizontal bleed lines on glitch trigger */
+    #name.glitch-hard::before { animation: none; transform: translate(-6px,0); opacity:1; }
+    #name.glitch-hard::after  { animation: none; transform: translate(6px,0);  opacity:1; }
+
+    /* Tagline typing */
+    #tagline {
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      color: var(--dim);
+      margin-top: 18px;
+      min-height: 22px;
+    }
+    .cursor-blink {
+      display: inline-block;
+      width: 8px; height: 13px;
+      background: var(--red);
+      vertical-align: middle;
+      animation: blink 0.7s step-end infinite;
+    }
+
+    /* Statement */
+    #statement {
+      margin-top: 36px;
+      max-width: 560px;
+      font-size: 13px;
+      line-height: 2;
+      color: rgba(240,240,240,0.5);
+      letter-spacing: 0.08em;
+      border-left: 2px solid rgba(255,26,26,0.4);
+      padding-left: 20px;
+      text-align: left;
+    }
+    #statement strong {
+      color: var(--white);
+      font-family: var(--head);
+      font-size: 22px;
+      letter-spacing: 0.1em;
+      display: block;
+      margin-top: 12px;
+    }
+    /* Glitch the "social media." phrase */
+    .glitch-phrase {
+      position: relative;
+      display: inline-block;
+      color: rgba(240,240,240,0.5);
+    }
+    .glitch-phrase::before {
+      content: attr(data-text);
+      position: absolute; inset: 0;
+      color: var(--red);
+      clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+      animation: phraseGlitch 7s steps(1) infinite;
+    }
+    .glitch-phrase::after {
+      content: attr(data-text);
+      position: absolute; inset: 0;
+      color: #00eeff;
+      clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+      animation: phraseGlitch 7s steps(1) infinite 0.05s;
+    }
+    @keyframes phraseGlitch {
+      0%,92%,100% { transform:translate(0,0); opacity:0; }
+      93% { transform:translate(-3px,1px); opacity:0.9; }
+      94% { transform:translate(3px,-1px); opacity:0; }
+      95% { transform:translate(-2px,0); opacity:0.85; }
+      97% { transform:translate(0,0); opacity:0; }
+    }
+
+    /* ── DIVIDER ─────────────────────────────────────────── */
+    .divider {
+      width: 100%; max-width: 560px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255,26,26,0.5), transparent);
+      margin: 40px 0;
+    }
+
+    /* ── CONTACT TRIGGER ─────────────────────────────────── */
+    #tx-btn {
+      position: relative;
+      font-family: var(--head);
+      font-size: 20px;
+      letter-spacing: 0.25em;
+      color: var(--bg);
+      background: var(--red);
+      border: none;
+      padding: 14px 44px;
+      cursor: crosshair;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+      transition: background 0.15s, transform 0.1s;
+      outline: none;
+      text-transform: uppercase;
+    }
+    #tx-btn:hover {
+      background: var(--red3);
+      transform: scaleX(1.03);
+    }
+    #tx-btn:active { transform: scale(0.97); }
+    #tx-btn::after {
+      content: '';
+      position: absolute; inset: -3px;
+      clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+      border: 1px solid rgba(255,26,26,0.5);
+      pointer-events: none;
+    }
+    #tx-btn.sending {
+      animation: btnFlicker 0.1s steps(1) infinite;
+    }
+    @keyframes btnFlicker {
+      0%,100% { opacity:1; } 50% { opacity:0.4; }
+    }
+
+    /* ── CONTACT PANEL ───────────────────────────────────── */
+    #contact-panel {
+      width: 100%; max-width: 560px;
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s;
+      opacity: 0;
+    }
+    #contact-panel.open {
+      max-height: 700px;
+      opacity: 1;
+    }
+    .panel-inner {
+      padding-top: 32px;
+    }
+    .panel-header {
+      font-size: 9px; letter-spacing: 0.35em;
+      color: var(--red); margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .panel-header::before { content: '▶ '; }
+
+    .field-group { margin-bottom: 18px; }
+    .field-label {
+      display: block;
+      font-size: 9px; letter-spacing: 0.25em;
+      color: rgba(255,26,26,0.7); margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .field-input {
+      width: 100%;
+      background: rgba(255,26,26,0.04);
+      border: 1px solid rgba(255,26,26,0.25);
+      color: var(--white);
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field-input:focus {
+      border-color: rgba(255,26,26,0.7);
+      box-shadow: 0 0 0 1px rgba(255,26,26,0.3), inset 0 0 12px rgba(255,26,26,0.04);
+    }
+    textarea.field-input { resize: vertical; min-height: 110px; }
+
+    #form-status {
+      margin-top: 14px;
+      font-size: 11px; letter-spacing: 0.15em;
+      min-height: 20px;
+      color: var(--red);
+    }
+    #form-status.ok { color: #00ff88; }
+    #form-status::before { content: '// '; }
+
+    /* ── CORNER DECORATIONS (page) ───────────────────────── */
+    .page-corner {
+      position: fixed; z-index: 5;
+      width: 40px; height: 40px;
+      border-color: rgba(255,26,26,0.3);
+      border-style: solid; border-width: 0;
+      pointer-events: none;
+    }
+    .pc-tl { top: 50px; left: 12px; border-top-width: 1px; border-left-width: 1px; }
+    .pc-tr { top: 50px; right: 12px; border-top-width: 1px; border-right-width: 1px; }
+    .pc-bl { bottom: 44px; left: 12px; border-bottom-width: 1px; border-left-width: 1px; }
+    .pc-br { bottom: 44px; right: 12px; border-bottom-width: 1px; border-right-width: 1px; }
+
+    /* ── SCAN LINE SWEEP ─────────────────────────────────── */
+    #scanline {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, transparent, rgba(255,26,26,0.15) 40%, rgba(255,26,26,0.35) 50%, rgba(255,26,26,0.15) 60%, transparent);
+      z-index: 3; pointer-events: none;
+      animation: scanline 6s linear infinite;
+    }
+    @keyframes scanline {
+      0%   { top: -2px; opacity: 0; }
+      5%   { opacity: 1; }
+      95%  { opacity: 1; }
+      100% { top: 100vh; opacity: 0; }
+    }
+
+    /* ── RED GLOW BLEED ──────────────────────────────────── */
+    #glow-center {
+      position: fixed; z-index: 2; pointer-events: none;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(255,26,26,0.07) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+      animation: glowPulse 4s ease-in-out infinite;
+    }
+    @keyframes glowPulse {
+      0%,100% { opacity:0.6; transform:translate(-50%,-50%) scale(1); }
+      50% { opacity:1; transform:translate(-50%,-50%) scale(1.1); }
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 520px) {
+      #scanner-wrap { width: 280px; height: 280px; }
+      #hud-top .hud-left { gap: 16px; }
+      #hud-top .hud-right { gap: 12px; }
+      #name { font-size: 58px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HUD TOP -->
+  <div id="hud-top">
+    <div class="hud-left">
+      <span><span class="hud-label">SYS </span>ONLINE</span>
+      <span><span class="hud-label">NET </span>ENCRYPTED</span>
+      <span><span class="hud-label">UTC </span><span id="utc-time">--:--:--</span></span>
+    </div>
+    <div class="hud-right">
+      <span id="scan-pct">SCAN 0%</span>
+      <span class="hud-blink"></span>
+    </div>
+  </div>
+
+  <!-- PAGE CORNER TICKS -->
+  <div class="page-corner pc-tl"></div>
+  <div class="page-corner pc-tr"></div>
+  <div class="page-corner pc-bl"></div>
+  <div class="page-corner pc-br"></div>
+
+  <!-- SCANLINE -->
+  <div id="scanline"></div>
+
+  <!-- CENTER GLOW -->
+  <div id="glow-center"></div>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- SCANNER -->
+    <div id="scanner-wrap">
+      <div class="ring ring-outer"></div>
+      <div class="ring ring-mid"></div>
+      <div class="ring ring-inner"></div>
+      <div class="crosshair-h"></div>
+      <div class="crosshair-v"></div>
+      <div id="sweep"></div>
+      <!-- Pings placed by JS -->
+      <div class="corner-tick ct-tl"></div>
+      <div class="corner-tick ct-tr"></div>
+      <div class="corner-tick ct-bl"></div>
+      <div class="corner-tick ct-br"></div>
+      <div id="center-lock">●</div>
+    </div>
+
+    <!-- IDENTITY -->
+    <div id="identity">
+      <div class="scan-label" id="scan-label">TARGET ACQUIRED</div>
+      <div id="name" data-text="KHIRI AISSAM">KHIRI AISSAM</div>
+      <div id="tagline"><span class="cursor-blink"></span></div>
+
+      <div id="statement">
+        I am not on <span class="glitch-phrase" data-text="social media.">social media.</span>
+        I don't post.<br>I don't scroll.<br>
+        <strong>I BUILD.</strong>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- CONTACT TRIGGER -->
+    <button id="tx-btn" onclick="toggleForm()">REQUEST TRANSMISSION</button>
+
+    <!-- CONTACT PANEL -->
+    <div id="contact-panel">
+      <div class="panel-inner">
+        <div class="panel-header">Secure channel open — transmit your message</div>
+        <form id="contact-form">
+          <div class="field-group">
+            <label class="field-label" for="cf-name">Identifier</label>
+            <input id="cf-name" name="name" type="text" class="field-input" placeholder="Your name" required />
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="cf-email">Return channel</label>
+            <input id="cf-email" name="email" type="email" class="field-input" placeholder="your@email.com" required />
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="cf-msg">Payload</label>
+            <textarea id="cf-msg" name="message" class="field-input" placeholder="Your message..." required></textarea>
+          </div>
+          <button id="tx-btn" type="submit" onclick="void(0)" style="margin-top:8px; width:100%;">TRANSMIT</button>
+        </form>
+        <div id="form-status"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- HUD BOTTOM -->
+  <div id="hud-bot">
+    <span>KHIRIAISSAM.COM</span>
+    <span class="sys-id">SID-KA-2026</span>
+    <span>© 2026 KHIRI AISSAM</span>
+  </div>
+
+  <script>
+    // ── CONFIG ──────────────────────────────────────────────
+    const FORMSPREE = 'https://formspree.io/f/YOUR_FORM_ID';
+
+    // ── UTC CLOCK ────────────────────────────────────────────
+    function tick() {
+      const now = new Date();
+      const pad = n => String(n).padStart(2,'0');
+      document.getElementById('utc-time').textContent =
+        `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`;
+    }
+    tick(); setInterval(tick, 1000);
+
+    // ── SCAN % COUNTER ───────────────────────────────────────
+    (function() {
+      const el = document.getElementById('scan-pct');
+      let v = 0;
+      const iv = setInterval(() => {
+        v = Math.min(v + Math.floor(Math.random()*4)+1, 100);
+        el.textContent = `SCAN ${v}%`;
+        if (v >= 100) {
+          clearInterval(iv);
+          el.textContent = 'SCAN COMPLETE';
+          el.style.color = 'var(--red)';
+          document.getElementById('scan-label').textContent = 'IDENTITY CONFIRMED';
+        }
+      }, 38);
+    })();
+
+    // ── RADAR PINGS ──────────────────────────────────────────
+    (function() {
+      const wrap = document.getElementById('scanner-wrap');
+      const SIZE = wrap.offsetWidth || 380;
+      const positions = [
+        { top:'28%', left:'68%', delay:'0s' },
+        { top:'62%', left:'35%', delay:'1.2s' },
+        { top:'45%', left:'72%', delay:'2.4s' },
+        { top:'32%', left:'44%', delay:'3.1s' },
+      ];
+      positions.forEach(p => {
+        const d = document.createElement('div');
+        d.className = 'ping';
+        d.style.top = p.top;
+        d.style.left = p.left;
+        d.style.animationDelay = p.delay;
+        wrap.appendChild(d);
+      });
+    })();
+
+    // ── MOUSE PARALLAX ───────────────────────────────────────
+    const scanner = document.getElementById('scanner-wrap');
+    document.addEventListener('mousemove', e => {
+      const cx = window.innerWidth  / 2;
+      const cy = window.innerHeight / 2;
+      const dx = (e.clientX - cx) / cx;
+      const dy = (e.clientY - cy) / cy;
+      scanner.style.transform = `translate(${dx*10}px, ${dy*8}px)`;
+    });
+
+    // ── TAGLINE TYPING ───────────────────────────────────────
+    (function() {
+      const lines = [
+        'BUILDER. DEVELOPER. MAKER.',
+        'NO POSTS. NO FEEDS. ONLY OUTPUT.',
+        'ANDROID / WEB / TOOLS.',
+      ];
+      let li = 0, ci = 0, deleting = false;
+      const el = document.getElementById('tagline');
+      function loop() {
+        const txt = lines[li];
+        if (!deleting) {
+          el.innerHTML = txt.slice(0, ci+1) + '<span class="cursor-blink"></span>';
+          ci++;
+          if (ci === txt.length) { deleting = true; setTimeout(loop, 2200); return; }
+          setTimeout(loop, 55);
+        } else {
+          el.innerHTML = txt.slice(0, ci) + '<span class="cursor-blink"></span>';
+          ci--;
+          if (ci < 0) {
+            deleting = false; ci = 0;
+            li = (li + 1) % lines.length;
+            setTimeout(loop, 350);
+            return;
+          }
+          setTimeout(loop, 28);
+        }
+      }
+      setTimeout(loop, 800);
+    })();
+
+    // ── FORM TOGGLE ──────────────────────────────────────────
+    let formOpen = false;
+    function toggleForm() {
+      const panel = document.getElementById('contact-panel');
+      formOpen = !formOpen;
+      panel.classList.toggle('open', formOpen);
+    }
+
+    // ── FORM SUBMIT ──────────────────────────────────────────
+    document.getElementById('contact-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = document.querySelector('#contact-form button[type="submit"]');
+      const status = document.getElementById('form-status');
+      btn.classList.add('sending');
+      btn.textContent = 'TRANSMITTING...';
+      status.textContent = '';
+      status.className = '';
+      try {
+        const res = await fetch(FORMSPREE, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: new FormData(e.target),
+        });
+        if (res.ok) {
+          btn.textContent = 'TRANSMISSION SENT';
+          btn.classList.remove('sending');
+          status.textContent = 'Signal received. Response incoming.';
+          status.className = 'ok';
+          e.target.reset();
+        } else {
+          throw new Error();
+        }
+      } catch {
+        btn.textContent = 'REQUEST TRANSMISSION';
+        btn.classList.remove('sending');
+        status.textContent = 'Transmission failed. Try again.';
+      }
+    });
+
+    // ── RANDOM HUD GLITCH ────────────────────────────────────
+    setInterval(() => {
+      const name = document.getElementById('name');
+      name.classList.add('glitch-hard');
+      setTimeout(() => name.classList.remove('glitch-hard'), 120);
+    }, 6000);
+  </script>
+</body>
+</html>
