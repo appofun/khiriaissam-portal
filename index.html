@@ -3,26 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Khiri Aissam - Reserved Personal Domain</title>
-  <meta name="description" content="KhiriAissam.com is a reserved personal domain with a minimal privacy-focused contact page and no public personal information.">
-  <meta name="keywords" content="Khiri Aissam, KhiriAissam.com, reserved personal domain, official personal domain, private contact page">
-  <meta name="author" content="Khiri Aissam">
-  <meta name="robots" content="index, follow">
-  <meta property="og:title" content="Khiri Aissam - Reserved Personal Domain">
-  <meta property="og:description" content="A minimal privacy-focused personal domain page with a Get in Touch section and no public personal information.">
+  <title>Khiri Aissam</title>
+  <meta name="description" content="KhiriAissam.com — Reserved personal domain.">
+  <meta property="og:title" content="Khiri Aissam">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://khiriaissam.com">
-  <meta property="og:site_name" content="Khiri Aissam">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Khiri Aissam - Reserved Personal Domain">
-  <meta name="twitter:description" content="A minimal privacy-focused personal domain page.">
+  <meta name="robots" content="index, follow">
   <!-- FAVICON placeholder
-       <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
-       <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+       <link rel="icon" type="image/png" href="./favicon.png">
   -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
   <link rel="canonical" href="https://khiriaissam.com">
 </head>
@@ -38,183 +30,41 @@
     <canvas id="particles" class="particles-canvas"></canvas>
   </div>
 
-  <!-- Header -->
-  <header id="header" role="banner">
-    <nav class="nav container" aria-label="Main navigation">
-      <a href="#home" class="nav-logo" aria-label="Khiri Aissam — home">
-        <span class="logo-dot" aria-hidden="true"></span>
-        KhiriAissam.com
-      </a>
-      <ul class="nav-links" role="list">
-        <li><a href="#contact" class="nav-link">Get in Touch</a></li>
-      </ul>
-    </nav>
-  </header>
+  <main class="page-wrap">
 
-  <main id="main">
+    <!-- Name -->
+    <div class="name-block fade-in">
+      <h1 class="name-title">Khiri <span class="name-accent">Aissam</span></h1>
+      <p class="name-sub">KhiriAissam.com</p>
+    </div>
 
-    <!-- 1. HERO -->
-    <section id="home" class="hero" aria-label="Hero">
-      <div class="container hero-inner">
-
-        <div class="hero-content fade-in">
-          <div class="hero-badge">
-            <span class="badge-pulse" aria-hidden="true"></span>
-            Official Reserved Domain
-          </div>
-
-          <h1 class="hero-title">
-            Khiri<br>
-            <span class="title-accent">Aissam</span>
-          </h1>
-
-          <p class="hero-sub">Reserved personal domain.</p>
-
-          <p class="hero-msg">
-            This website is intentionally minimal. For privacy reasons, no personal
-            information, biography, photos, social media links, or public details
-            are published here.
-          </p>
-
-          <p class="hero-support">
-            For legitimate inquiries, use the
-            <a href="#contact" class="inline-link">Get in Touch</a> section below.
-          </p>
-
-          <div class="hero-actions">
-            <a href="#contact" class="btn btn--primary">Get in Touch</a>
-          </div>
-        </div>
-
-        <!-- Identity Card -->
-        <div class="hero-card-wrap fade-in" style="animation-delay:0.18s">
-          <div class="id-card glass-card">
-            <div class="id-card-glow" aria-hidden="true"></div>
-            <div class="id-card-head">
-              <div class="id-avatar" aria-hidden="true">
-                <span class="id-initials">KA</span>
-                <div class="id-avatar-ring"></div>
-              </div>
-              <div>
-                <span class="id-name">Khiri Aissam</span>
-                <span class="id-domain">KhiriAissam.com</span>
-              </div>
-            </div>
-            <div class="id-rows">
-              <div class="id-row">
-                <span class="id-label">Status</span>
-                <span class="id-value id-val--green">
-                  <span class="id-dot" aria-hidden="true"></span>Reserved
-                </span>
-              </div>
-              <div class="id-row">
-                <span class="id-label">Visibility</span>
-                <span class="id-value">Minimal</span>
-              </div>
-              <div class="id-row">
-                <span class="id-label">Public Profile</span>
-                <span class="id-value id-val--muted">Not Published</span>
-              </div>
-              <div class="id-row">
-                <span class="id-label">Contact</span>
-                <span class="id-value id-val--blue">Via Form Only</span>
-              </div>
-            </div>
-            <div class="id-card-foot">
-              <span class="id-tag">Private &nbsp;·&nbsp; Minimal &nbsp;·&nbsp; Official</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="scroll-hint" aria-hidden="true">
-        <span class="scroll-line"></span>
-        <span class="scroll-text">Scroll</span>
-      </div>
-    </section>
-
-    <!-- 2. GET IN TOUCH
-         STATIC FORM NOTE:
-         Replace action="#" with your form service URL to enable real submissions.
-         - Formspree: action="https://formspree.io/f/YOUR_ID" method="POST"
-         - Getform:   action="https://getform.io/f/YOUR_ID"   method="POST"
-         - Web3Forms: action + hidden access_key input
-         - Basin:     action="https://usebasin.com/f/YOUR_ID" method="POST"
+    <!-- Form
+         To enable real submissions, replace action="#" with your service URL:
+         Formspree: action="https://formspree.io/f/YOUR_ID" method="POST"
+         Getform:   action="https://getform.io/f/YOUR_ID"   method="POST"
     -->
-    <section id="contact" class="contact-section" aria-labelledby="contact-title">
-      <div class="container">
-        <div class="contact-wrap">
-
-          <div class="contact-info fade-in">
-            <span class="section-label">Contact</span>
-            <h2 id="contact-title" class="section-title">Get in Touch</h2>
-            <p class="section-desc">
-              Use this form only for legitimate messages.
-              All inquiries are reviewed manually.
-            </p>
-            <div class="contact-notes">
-              <div class="contact-note">
-                <span class="note-dot" aria-hidden="true"></span>
-                <span>Legitimate inquiries only</span>
-              </div>
-              <div class="contact-note">
-                <span class="note-dot" aria-hidden="true"></span>
-                <span>No personal details shared in replies</span>
-              </div>
-              <div class="contact-note">
-                <span class="note-dot" aria-hidden="true"></span>
-                <span>Response is not guaranteed</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="contact-form-wrap fade-in" style="animation-delay:0.15s">
-            <form class="contact-form glass-card" action="#" novalidate aria-label="Get in touch form">
-              <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" placeholder="Your name" autocomplete="name" required>
-              </div>
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="your@email.com" autocomplete="email" required>
-              </div>
-              <div class="form-group">
-                <label for="reason">Reason for Contact</label>
-                <select id="reason" name="reason" required>
-                  <option value="" disabled selected>Select a reason...</option>
-                  <option value="general">General Inquiry</option>
-                  <option value="business">Business</option>
-                  <option value="domain">Domain Related</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="message">Message</label>
-                <textarea id="message" name="message" rows="5" placeholder="Your message..." required></textarea>
-              </div>
-              <button type="submit" class="btn btn--primary btn--full">Send Message</button>
-            </form>
-          </div>
-
+    <div class="form-block fade-in" style="animation-delay:0.12s">
+      <form class="contact-form glass-card" action="#" novalidate>
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Your name" autocomplete="name" required>
         </div>
-      </div>
-    </section>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="your@email.com" autocomplete="email" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="4" placeholder="Your message..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn--primary btn--full">Send Message</button>
+      </form>
+    </div>
 
   </main>
 
-  <!-- Footer -->
-  <footer class="footer" role="contentinfo">
-    <div class="container footer-inner">
-      <div class="footer-brand">
-        <span class="footer-logo">KhiriAissam.com</span>
-        <p class="footer-tagline">Reserved personal domain.</p>
-      </div>
-      <nav class="footer-nav" aria-label="Footer navigation">
-        <a href="#contact" class="footer-link">Get in Touch</a>
-      </nav>
-      <p class="footer-copy">&copy; 2026 KhiriAissam.com. All rights reserved.</p>
-    </div>
+  <footer class="footer">
+    <p>&copy; 2026 KhiriAissam.com</p>
   </footer>
 
   <script src="./script.js"></script>
